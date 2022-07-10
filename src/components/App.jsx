@@ -5,7 +5,7 @@ import Loader from "./Loader";
 import Button from "./Button";
 import Modal from "./Modal";
 import { Component } from "react";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
@@ -20,16 +20,26 @@ export class App extends Component {
   }
   componentDidUpdate(prevProps, prevState) {
     const { page, query } = this.state;
-    if (prevState.page !== page || prevState.query !== query) {
+    if (prevState.query !== query) {
       this.setState({ status: 'pending' });
       fetchData(query, page)
         .then(response => {
-          this.setState({ images: response.data.hits, status: 'resolved' })
-          if (response.ok) {
-            this.setState({ images: response.data.hits, status: 'resolved' })
+          if (response.data.hits.length === 0) {
+            toast.error('Nothing found!');
             return;
           }
-          return Promise.reject(new Error('Nothing found'));
+          this.setState({ images: response.data.hits, page: 1, status: 'resolved' })
+        })
+        .catch(error => console.log({ error, status: 'rejected' }))
+        .finally(() => { this.setState({ status: 'resolved' }) });
+    }
+    if (prevState.page !== page) {
+      this.setState({ status: 'pending' });
+      fetchData(query, page)
+        .then(response => {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...response.data.hits]
+          }))
         })
         .catch(error => console.log({ error, status: 'rejected' }))
         .finally(() => { this.setState({ status: 'resolved' }) });
@@ -57,22 +67,6 @@ export class App extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }))
-    this.loadData();
-  }
-
-  loadData = async () => {
-    fetchData(this.state.query, this.state.page)
-      .then(response => {
-        return response.data.hits;
-      })
-      .then(r => {
-        this.setState(prevState => {
-          console.log('prevState.images', prevState.images);
-          console.log('r', r)
-        })
-      })
-      .catch(error => console.log({ error, status: 'rejected' }))
-      .finally(() => { this.setState({ status: 'resolved' }) });
   }
 
   render() {
@@ -89,9 +83,12 @@ export class App extends Component {
         </div>
         {query && <ImageGallery imgArr={images} onImgClick={this.onImgClick} />}
         {showModal && (
-          <Modal onModalClose={this.toggleModal} openedImg={openedImg} tags={tags}>
-
-          </Modal>)}
+          <Modal
+            onModalClose={this.toggleModal}
+            openedImg={openedImg}
+            tags={tags}
+          />
+        )}
         {status === 'resolved' && <Button onClick={this.loadMore} />}
 
       </div>

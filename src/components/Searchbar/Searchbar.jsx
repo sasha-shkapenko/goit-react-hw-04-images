@@ -13,7 +13,7 @@ class Searchbar extends Component {
     formSubmit = (e) => {
         e.preventDefault();
         if (this.state.query.trim() === '') {
-            toast.error('Enter your query');
+            toast.warning('Enter your query');
             return;
         }
         this.props.onSubmit(this.state.query);
