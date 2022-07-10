@@ -19,11 +19,11 @@ export default class Modal extends Component {
         }
     }
     render() {
-        const { openedImg } = this.props;
+        const { openedImg, tags } = this.props;
         return (
             <div className={s.Overlay} onClick={this.onBackDropClick}>
                 <div className={s.Modal}>
-                    <img src={openedImg} />
+                    <img src={openedImg} alt={tags} />
                 </div>
             </div>
         )
