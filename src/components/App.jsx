@@ -64,11 +64,6 @@ export class App extends Component {
     fetchData(this.state.query, this.state.page)
       .then(response => {
         return response.data.hits;
-        if (response.ok) {
-          this.setState({ images: response.data.hits, status: 'resolved' })
-          return;
-        }
-        return Promise.reject(new Error('Nothing found'));
       })
       .then(r => {
         this.setState(prevState => {
@@ -81,7 +76,7 @@ export class App extends Component {
   }
 
   render() {
-    const { images, page, query, showModal, status, openedImg, tags } = this.state;
+    const { images, query, showModal, status, openedImg, tags } = this.state;
 
     return (
       <div className="App">
