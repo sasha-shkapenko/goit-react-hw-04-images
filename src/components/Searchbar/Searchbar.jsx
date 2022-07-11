@@ -24,7 +24,7 @@ class Searchbar extends Component {
             <header className={s.Searchbar}>
                 <form className={s.SearchForm} onSubmit={this.formSubmit}>
                     <button type="submit" className={s.SearchFormButton}>
-                        <AiOutlineSearch value={{ size: "16px" }} />
+                        <AiOutlineSearch />
                         <span className={s.SearchFormButtonLabel}>Search</span>
                     </button>
 
@@ -34,8 +34,8 @@ class Searchbar extends Component {
                         type="text"
                         name='query'
                         value={this.state.query}
-                        autocomplete="off"
-                        autofocus
+                        autoComplete="off"
+                        autoFocus
                         placeholder="Search images and photos"
                     />
                 </form>

@@ -17,6 +17,7 @@ export class App extends Component {
     query: '',
     showModal: false,
     status: 'idle',
+    total: null,
   }
   componentDidUpdate(prevProps, prevState) {
     const { page, query } = this.state;
@@ -28,7 +29,12 @@ export class App extends Component {
             toast.error('Nothing found!');
             return;
           }
-          this.setState({ images: response.data.hits, page: 1, status: 'resolved' })
+          this.setState({
+            images: response.data.hits,
+            page: 1,
+            status: 'resolved',
+            total: response.data.totalHits,
+          })
         })
         .catch(error => console.log({ error, status: 'rejected' }))
         .finally(() => { this.setState({ status: 'resolved' }) });
@@ -38,7 +44,7 @@ export class App extends Component {
       fetchData(query, page)
         .then(response => {
           this.setState(prevState => ({
-            images: [...prevState.images, ...response.data.hits]
+            images: [...prevState.images, ...response.data.hits],
           }))
         })
         .catch(error => console.log({ error, status: 'rejected' }))
@@ -70,7 +76,7 @@ export class App extends Component {
   }
 
   render() {
-    const { images, query, showModal, status, openedImg, tags } = this.state;
+    const { images, query, showModal, status, openedImg, tags, total } = this.state;
 
     return (
       <div className="App">
@@ -89,7 +95,7 @@ export class App extends Component {
             tags={tags}
           />
         )}
-        {status === 'resolved' && <Button onClick={this.loadMore} />}
+        {status === 'resolved' && images.length > 0 && images.length < total && <Button onClick={this.loadMore} />}
 
       </div>
     );
