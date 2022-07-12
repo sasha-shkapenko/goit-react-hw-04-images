@@ -1,5 +1,5 @@
 import Searchbar from "./Searchbar";
-import { fetchData } from "./API/FetchData";
+import { fetchData } from "../API/fetchData";
 import ImageGallery from "./ImageGallery";
 import Loader from "./Loader";
 import Button from "./Button";
@@ -69,7 +69,7 @@ export class App extends Component {
       images: []
     });
   }
-  loadMore = async () => {
+  loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }))
